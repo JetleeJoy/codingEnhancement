@@ -1,0 +1,12 @@
+14:15 2021-07-28
+
+1. Dept First Search
+2. Breadth First Search
+3. Matching Paranthesis 
+4. Hash Table
+5. Variable/Pointer Manipulation
+6. Reversing Linked List
+7. Sorting Fundamentals
+8. Recursion
+9. Custom Data Structures
+10. Binary Search
