@@ -87,10 +87,43 @@ class linkedList():
                     break
                 else:
                     this_node = this_node.get_next()
+    #insert element at a specif postition
+    def insert(self, pos, d):
+        new_node = Node(d)
+        this_node = self.root
+        prev_node = None
+        track = 1
+        if pos == 1:
+            self.prepend(d)
+        else:
+            while this_node is not None:
+                prev_node = this_node
+                this_node = this_node.get_next()
+                track += 1
+                if pos <= 0:
+                    print("Invalid index ! ")
+                    break
+                elif pos > self.get_size():
+                    print("out of bound index error")
+                    break
+                elif pos == track:
+                    new_node.set_next(prev_node.get_next())
+                    prev_node.set_next(new_node)
+                    self.size += 1
+                    break
+
+
+
+
 
 def main():
-    pass
-
+    llist = linkedList()
+    llist.insert(1,5)
+    llist.insert(1,8)
+    llist.prepend(56)
+    llist.insert(3,78)
+    llist.iterate()
+    print(llist.get_size())
 if __name__ == "__main__":
     main()
         
