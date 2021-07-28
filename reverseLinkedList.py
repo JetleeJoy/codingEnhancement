@@ -87,7 +87,7 @@ class linkedList():
                     break
                 else:
                     this_node = this_node.get_next()
-    #insert element at a specif postition
+    #insert element at a specific postition
     def insert(self, pos, d):
         new_node = Node(d)
         this_node = self.root
@@ -112,18 +112,62 @@ class linkedList():
                     self.size += 1
                     break
 
+    #reverse the list 
+    def reverse(self):
+        if self.get_size() == 0:
+            print("empty list")
+            return False
+        elif self.get_size() == 1:
+            return True
+        else:
+            #croot = self.root
+            temp = self.root
+            self.root = temp.get_next()
+            temp.set_next(None)
+            while self.root is not None:
+                if self.root.get_next() == None:
+                    self.root.set_next(temp)
+                    return True
+                else:
+                    temp2 = self.root
+                    self.root = temp2.get_next()
+                    temp2.set_next(temp)
+                    temp = temp2
 
-
+# external function 
+def reverseList(llist):
+    if llist.get_size() == 0:
+        print("Empty list")
+    elif llist.get_size() == 1:
+        return True
+    else:
+        temp = llist.root
+        llist.root = temp.get_next()
+        temp.set_next(None)
+        while llist.root is not None:
+            if llist.root.get_next() == None:
+                llist.root.set_next(temp)
+                return True
+            else:
+                temp2 = llist.root
+                llist.root = temp2.get_next()
+                temp2.set_next(temp)
+                temp = temp2
 
 
 def main():
     llist = linkedList()
     llist.insert(1,5)
-    llist.insert(1,8)
-    llist.prepend(56)
-    llist.insert(3,78)
+    llist.insert(1,4)
+    llist.insert(1,6)
+    llist.insert(1,34)
+    llist.insert(1,32)
+    llist.insert(1,522)
+    llist.insert(1,34)
     llist.iterate()
-    print(llist.get_size())
+    if reverseList(llist):
+        llist.iterate()
+
 if __name__ == "__main__":
     main()
         
