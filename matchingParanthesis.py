@@ -25,7 +25,7 @@ class Stack:
             print("Stack underflow ! ")
         else:
             item = self.stack.pop(self.tos)
-            print(item ," is deleted from stack")
+            #print(item ," is deleted from stack")
             self.tos -= 1
     #to display the element at top of stack
     def peek(self):
@@ -49,34 +49,42 @@ class Parser:
             }   
 
         self.close = {
-             '}': 1,
-             ']': 2,
-             ')': 3
+             '}': -1,
+             ']': -2,
+             ')': -3
             }
+
         self.input = inputString
+        self.output = ""
+        self._paranthesis = Stack()
 
     #analyzing the brackets
     def checkBracket(self):
         cinput = self.input #generate a copy of string
         cinput = list(cinput) #created a list out of string
-        tracker = 0
         for char in cinput:
             if char in self.open.keys():
-                for value in self.open.keys():
-                    if value == char:
-                        self.openB.push(self.open[char])
-            if char in self.close.keys():
-                for value in self.close.keys():
-                    if value == char:
-                        self.closeB.push(self.close[char])
+                for btype in self.open.keys():
+                    if char == '(': 
+                        self._paranthesis.push(self.open[btype])
+            elif char in self.close.keys():
+                for btype in self.close.keys():
+                    if char == ')':
+                        if self._paranthesis.isEmpty():
+                            cinput.remove(char)
+                        else:
+                            self._paranthesis.pop()     
+        self.output = self.output.join(cinput)
 
 
 #identify the unmatched paranthesis, remove it from string
-input = "(((9372absocnde2902{947209{{343}}3}))"
+input = "((a+b)+c))"
 
 
 def main():
     P = Parser(input)
+    P.checkBracket()
+    print(P.output)
 if __name__ == "__main__":
     main()
     
