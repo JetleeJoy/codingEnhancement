@@ -42,49 +42,54 @@ class Stack:
 class Parser:
     def __init__(self,inputString):
         #create dictionary for parser
-        self.open = {
-             '{': 1,
-             '[': 2,
-             '(': 3
-            }   
-
-        self.close = {
-             '}': -1,
-             ']': -2,
-             ')': -3
-            }
-
         self.input = inputString
         self.output = ""
-        self._paranthesis = Stack()
+        self._paranthesis_open = Stack()
+        self._paranthesis_close = Stack()
+        self._flagIndex = Stack()
+    
+    #function to remove all the flaged index from the list
+    def cleanList(self,list):
+        while not self._flagIndex.isEmpty():
+            list.pop(self._flagIndex.peek())
+            self._flagIndex.pop()
 
-    #analyzing the brackets
+    #function to check for disparity in barckets
     def checkBracket(self):
         cinput = self.input #generate a copy of string
         cinput = list(cinput) #created a list out of string
-        for char in cinput:
-            if char in self.open.keys():
-                for btype in self.open.keys():
-                    if char == '(': 
-                        self._paranthesis.push(self.open[btype])
-            elif char in self.close.keys():
-                for btype in self.close.keys():
-                    if char == ')':
-                        if self._paranthesis.isEmpty():
-                            cinput.remove(char)
-                        else:
-                            self._paranthesis.pop()     
+        _Limit = len(cinput)
+        
+        for i in range(_Limit):
+            if cinput[i] == '(':
+                self._paranthesis_open.push(cinput[i])
+            elif cinput[i] == ')':
+                if self._paranthesis_open.isEmpty():
+                    self._flagIndex.push(i)
+                else:
+                    self._paranthesis_open.pop()
+        self.cleanList(cinput)
+        _Limit = len(cinput)
+        for j in range(_Limit -1, -1, -1):
+            if cinput[j] == ')':
+                self._paranthesis_close.push(cinput[j])
+            elif cinput[j] == '(':
+                if self._paranthesis_close.isEmpty():
+                    self._flagIndex.push(j)
+                else:
+                    self._paranthesis_close.pop()
+        self.cleanList(cinput)
         self.output = self.output.join(cinput)
 
-
 #identify the unmatched paranthesis, remove it from string
-input = "((a+b)+c))"
+input = "((((a+b(a-b)(a+b))(a*b)))"
 
 
 def main():
     P = Parser(input)
     P.checkBracket()
-    print(P.output)
+    print("  Input : ",P.input)
+    print("M_Input : ",P.output)
 if __name__ == "__main__":
     main()
     
