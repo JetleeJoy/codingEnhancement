@@ -44,45 +44,101 @@ class Parser:
         #create dictionary for parser
         self.input = inputString
         self.output = ""
+
+        #bracket stacks
         self._paranthesis_open = Stack()
         self._paranthesis_close = Stack()
+        self._square_open = Stack()
+        self._square_close = Stack()
+        self._curly_open = Stack()
+        self._curly_close = Stack()
+        #stack to keep track of index to be eliminated
         self._flagIndex = Stack()
-    
+        self._open = ['{','(','[']
+        self._close = ['}',')',']']
+
+
     #function to remove all the flaged index from the list
     def cleanList(self,list):
         while not self._flagIndex.isEmpty():
             list.pop(self._flagIndex.peek())
             self._flagIndex.pop()
+    
 
-    #function to check for disparity in barckets
+    #function to indentify umatched brackets and eliminates the bracket form input
     def checkBracket(self):
-        cinput = self.input #generate a copy of string
-        cinput = list(cinput) #created a list out of string
+        cinput = list(self.input)
         _Limit = len(cinput)
-        
+        #checks in forward direction in terms of open brackets
         for i in range(_Limit):
-            if cinput[i] == '(':
-                self._paranthesis_open.push(cinput[i])
-            elif cinput[i] == ')':
-                if self._paranthesis_open.isEmpty():
-                    self._flagIndex.push(i)
-                else:
-                    self._paranthesis_open.pop()
+            if cinput[i] in self._open:
+                if cinput[i] == '(':
+                    self._paranthesis_open.push(cinput[i])
+
+                elif cinput[i] == '{':
+                    self._curly_open.push(cinput[i])
+
+                elif cinput[i] == '[':
+                    self._square_open.push(cinput[i])
+
+                
+            elif cinput[i] in self._close:
+                if cinput[i] == ')':
+                    if self._paranthesis_open.isEmpty():
+                        self._flagIndex.push(i)
+                    else:
+                        self._paranthesis_open.pop()
+
+                elif cinput[i] == '}':
+                    if self._curly_open.isEmpty():
+                        self._flagIndex.push(i)
+                    else:
+                        self._curly_open.pop()
+
+                elif cinput[i] == ']':
+                    if self._square_open.isEmpty():
+                        self._flagIndex.push(i)
+                    else:
+                        self._square_open.pop()
+
         self.cleanList(cinput)
         _Limit = len(cinput)
+        #checks in backward direction in terms of closed brackets
         for j in range(_Limit -1, -1, -1):
-            if cinput[j] == ')':
-                self._paranthesis_close.push(cinput[j])
-            elif cinput[j] == '(':
-                if self._paranthesis_close.isEmpty():
-                    self._flagIndex.push(j)
-                else:
-                    self._paranthesis_close.pop()
-        self.cleanList(cinput)
-        self.output = self.output.join(cinput)
+            if cinput[j] in self._close:
+                if cinput[j] == ')':
+                    self._paranthesis_close.push(cinput[j])
 
+                elif cinput[j] == '}':
+                    self._curly_close.push(cinput[j])
+
+                elif cinput[j] == ']':
+                    self._square_close.push(cinput[j])
+
+            if cinput[j] in self._open:
+                if cinput[j] == '(':
+                    if self._paranthesis_close.isEmpty():
+                        self._flagIndex.push(j)
+                    else:
+                        self._paranthesis_close.pop()
+
+                if cinput[j] == '{':
+                    if self._curly_close.isEmpty():
+                        self._flagIndex.push(j)
+                    else:
+                        self._curly_close.pop()
+
+                if cinput[j] == '[':
+                    if self._square_close.isEmpty():
+                        self._flagIndex.push(j)
+                    else:
+                        self._square_close.pop()
+        self.cleanList(cinput)
+
+        self.output = self.output.join(cinput)       
+        
 #identify the unmatched paranthesis, remove it from string
-input = "((((a+b(a-b)(a+b))(a*b)))"
+input = "[(a+b){a-b][(a*b))]]"
 
 
 def main():
